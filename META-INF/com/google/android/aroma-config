@@ -1,0 +1,300 @@
+# LICENSE:
+#
+# Copyright (C) 2011 Ahmad Amarullah ( http://amarullz.com/ )
+# Copyright (C) 2012 Benjamin Gwynn ( http://benjaminprofile.moonfruit.com/ )
+# Copyright (C) 2012 Team Legacy (xda developers)
+#
+# Distributed with Team Legacy AllInOneCM10 and above.
+#
+# AllInOneCM10 installation script using aroma with "devpackage"
+#
+# made using some simple code from ONeill123 and the default AROMA sample
+# some bugs fixed by jmztaylor and skippycentral.
+#
+# Thanks to amarullz for the original AROMA installation manifest
+
+
+# [[Build information]]
+#
+# This is where we are going to set everything about the build including what phone this 
+# is installing on. Please make sure that you keep version information consistent across
+# different phones.
+#
+
+#- Touch screen calibration information
+calibrate("9.8014","24","10.3867","22");
+#- Installer theme
+theme("ics");
+#- Name
+ini_set("rom_name",             "CM10");
+#- Version
+ini_set("rom_version",          "1");
+#- Me (aren't I awesome)
+ini_set("rom_author",           "TeamLegacy");
+#- Device this is built for (e.g. HeroC)
+ini_set("rom_device",           "HTCLegaC");
+#- Build date (e.g. 06/04/2012)
+ini_set("rom_date",             "8/6/12");
+#- ROM Codename (e.g. Nemesis)
+ini_set("rom_codename",             "v1");
+#- Device number
+#--- 1: Hero - CDMA
+#--- 2: Hero - GSM
+#--- 2: Eris - CDMA
+writetmpfile(
+	  "device.prop",
+  		  "selected=1"
+	   );
+
+# [[End of ROM information]]
+#
+# If you are configuring the ROM to run on a certain device and is supported by me then
+# you do not need to change anything beyond this point in the script. You may need to
+# replace the 'updater-binary-installer' file in this folder from a 'updater-binary'
+# from a ROM designed for your phone.
+
+#
+# Show Animated Splash
+#
+anisplash(
+  #-- Number of Loop
+    4,
+  
+  #-- Frame 1 [ Image, duration in millisecond ]. <AROMA Resource Dir>/splash/a[1..6].png
+    "splash/a1", 500,
+    "splash/a2", 30,
+    "splash/a3", 30,
+    "splash/a4", 30,
+    "splash/a5", 30,
+    "splash/a6", 30
+);
+
+#- Looks to see if the device is set and if not to refuse to install
+if prop("device.prop","selected")=="0" then
+viewbox(
+  #-- Title
+    "Error",
+  
+  #-- Text
+    "The installation can not continue. You have downloaded all files and not specifed what device you have. The system will now reboot.\n",
+  
+  #-- Icon
+    "@welcome"
+);
+run_program("/sbin/reboot");
+endif;
+
+# Bug fix center
+#
+# If anything is causing bugs put the fixes bellow
+
+
+#- Fixes PIM bug
+writetmpfile(
+	  "pim.prop",
+  		  "selected=0\n"
+ 	   );
+
+#- Fixes experimental bug
+writetmpfile(
+	  "experimental.prop",
+  		  "selected=0\n"
+ 	   );
+	   
+#
+#- Fixes bad kernel bug
+#
+
+writetmpfile(
+	  "kernel-heroc.prop",
+  		  "selected=0\n"
+ 	   );
+writetmpfile(
+	  "kernel-hero.prop",
+  		  "selected=0\n"
+ 	   );
+writetmpfile(
+	  "kernel-eris.prop",
+		  "selected=0\n"
+	   );
+# Don't bother putting anymore fixes :)
+
+#
+# Let's start the actual GUI.
+#
+
+viewbox(
+  #-- Title
+    "Welcome",
+  
+  #-- Text
+    "You are about to Install <b>"+
+	  #-- Get Config Value
+	  ini_get("rom_name")+
+	"</b> for <b>"+ini_get("rom_device")+"</b>.\n\n"+
+    
+    "TeamLegacy Presents: AllInOneInstaller\n\n"+
+	
+      "  VERSION\t: <b><#selectbg_g>"+ini_get("rom_version")+"</#></b>\n"+
+      "  UPDATED\t: <b><#selectbg_g>"+ini_get("rom_date")+"</#></b>\n\n\n"+
+
+    "Press Next to Continue the Installation...",
+  
+  #-- Icon
+    "@welcome"
+);
+
+
+#
+# STEP 3 - LICENSE
+#
+agreebox(
+  #-- Title
+    "Terms and Conditions",
+  
+  #-- Subtitle / Description
+    "Please read carefully the AllInOne terms below",
+  
+  #-- Icon
+    "@license",
+  
+  #-- Text Content ( Read from <AROMA Resource Dir>/license.txt )
+    resread("license.txt"),
+  
+  #-- Checkbox Text
+    "I Agree with these Terms and Conditions...",
+  
+  #-- Unchecked Alert Message
+    "Please check the agreement to continue."
+);
+
+#
+# STEP 6 - INSTALLATION OPTION / NOOB ASK
+#
+
+menubox(
+  #-- Title
+    "Select Your Device",
+  
+  #-- Sub Title
+    "Select your device from the options below.",
+  
+  #-- Icon
+    "@apps",
+    
+  #-- Will be saved in /tmp/aroma/device.prop
+    "installtype.prop",
+    
+  #-------------------------+-----------------[ Menubox Items ]-------------------------+---------------#
+  # TITLE                   |  SUBTITLE                                                 |   Item Icons  #
+  #-------------------------+-----------------------------------------------------------+---------------#
+	
+	    "HeroC",        "If you have a Hero CDMA Phone",              "@apps",      #-- selected = 1
+		"Hero",         "If you have a Hero GSM Phone",               "@apps",       #-- selected = 2
+		"Eris",         "If you have an Eris CDMA Phone",             "@apps"       #-- selected = 3
+
+);
+
+#
+# SYSTEM KERNEL INSTALLATION SELECTION FOR "DEVPACKAGE" FILE FORMAT
+#
+
+# Lets look if you have selected HeroC, Hero or Eris and set device.prop to the corresponding choice.
+
+if prop("installtype.prop","selected")=="1" then
+writetmpfile(
+	  "device.prop",
+  		  "selected=1"
+ 	   );
+endif;
+
+if prop("installtype.prop","selected")=="2" then
+writetmpfile(
+	  "device.prop",
+  		  "selected=2"
+ 	   );
+endif;
+
+if prop("installtype.prop","selected")=="3" then
+writetmpfile(
+	  "device.prop",
+  		  "selected=3"
+ 	   );
+endif;
+
+ini_set("text_next", "Install Now");
+
+###################################################################################################################
+#
+# STEP 10 - MAKE SURE USER KNOW THAT NEXT STEP WAS INSTALLATION PROCESS
+#
+viewbox(
+  #-- Title
+    "Ready to Install",
+
+  #-- Text
+    "The wizard is ready to begin installation.\n\n"+
+	"Press <b>Install Now</b> to begin the installation.\n\n"+
+	"If you want to review or change any of your installation settings, press <b>Back</b>. Press Menu Key -> Quit Installation to exit the wizard.",
+
+  #-- Icon
+    "@install"
+);
+
+##
+#
+# Next Button in successfull installation should be back to "Next >"
+#
+ini_set("text_next", "Next >");
+
+#-- Extract sleep to /tmp/aroma/sleep. It will be used in updater-script for testing wait script
+restotmp("exec_demo/sleep","sleep");
+
+
+###################################################################################################################
+#
+# STEP 11 - INSTALLATION PROCESS
+#
+setvar("retstatus",
+  install(
+	#-- Title
+      "Installing",
+	
+	#-- Installation Process message
+	  "This may take several minutes...",
+	
+	#-- Installation Icon
+      "@install",
+	
+	#-- Installation Finish Message
+      "AllInOne installed!"
+  )
+);
+
+##
+#
+# Next Button is "Finish"
+#
+ini_set("text_next", "Finish");
+
+###################################################################################################################
+#
+# STEP 12 - FINISH MESSAGE
+#
+
+viewbox(
+  #-- Title
+    "Installation Completed",
+  
+  #-- Text
+    "<#selectbg_g><b>Congratulations...</b></#>\n\n"+
+    "AllInOneCM10 has been installed."+
+    "Installer Status: "+getvar("retstatus"),
+
+  #-- Icon
+    "@welcome"
+
+);
+
+#---- FINISH
+
