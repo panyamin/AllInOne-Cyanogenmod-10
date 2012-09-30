@@ -34,7 +34,7 @@ ini_set("rom_author",           "TeamLegacy");
 #- Device this is built for (e.g. HeroC)
 ini_set("rom_device",           "HTCLegaC");
 #- Build date (e.g. 06/04/2012)
-ini_set("rom_date",             "8/6/12");
+ini_set("rom_date",             "01/10/12");
 #- ROM Codename (e.g. Nemesis)
 ini_set("rom_codename",             "v1");
 #- Device number
@@ -117,6 +117,10 @@ writetmpfile(
 	  "kernel-eris.prop",
 		  "selected=0\n"
 	   );
+writetmpfile(
+	  "kernel-magic.prop",
+		  "selected=0\n"
+	   );	   
 # Don't bother putting anymore fixes :)
 
 #
@@ -192,6 +196,7 @@ menubox(
 	    "HeroC",        "If you have a Hero CDMA Phone",              "@apps",      #-- selected = 1
 		"Hero",         "If you have a Hero GSM Phone",               "@apps",       #-- selected = 2
 		"Eris",         "If you have an Eris CDMA Phone",             "@apps"       #-- selected = 3
+		"Magic",         "If you have a Magic GSM Phone",             "@apps"       #-- selected = 4		
 
 );
 
@@ -219,6 +224,13 @@ if prop("installtype.prop","selected")=="3" then
 writetmpfile(
 	  "device.prop",
   		  "selected=3"
+ 	   );
+endif;
+
+if prop("installtype.prop","selected")=="4" then
+writetmpfile(
+	  "device.prop",
+  		  "selected=4"
  	   );
 endif;
 

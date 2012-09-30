@@ -15,7 +15,7 @@
 # and BenjaminGwynn for his .sense rom.
 
 ui_print("AllInOneCM10");
-ui_print("8/6/12");
+ui_print("01/10/12");
 ui_print("TeamLegacy");
 set_progress(0.0);
 ui_print(" ");
@@ -58,6 +58,13 @@ ui_print("Extraction of main finished");
       ui_print("Installing packages for the Eris");
       package_extract_dir("devicesupport/eris/system", "/system");
     endif;
+	
+	if
+      file_getprop("/tmp/aroma/device.prop","selected") == "4"
+    then
+      ui_print("Installing packages for the Magic");
+      package_extract_dir("devicesupport/magic/system", "/system");
+    endif;	
 
 # Now that we have that out of the way we can extract the kernel depending on what you selected
 
@@ -95,6 +102,16 @@ set_progress(0.50);
        delete("/tmp/boot.img");
       package_extract_dir("devicesupport/eris/modules/ErisKernel1", "/system/lib/modules");
     endif;
+	
+	if
+      file_getprop("/tmp/aroma/device.prop","selected") == "4"
+    then
+      ui_print("Installing kernel ...");
+      package_extract_dir("devicesupport/magic/kernels/MagicKernel1", "/tmp");
+       write_raw_image("/tmp/boot.img", "boot");
+       delete("/tmp/boot.img");
+      package_extract_dir("devicesupport/magic/modules/MagicKernel1", "/system/lib/modules");
+    endif;	
 
 ui_print("Creating symlinks");
 symlink("Roboto-Bold.ttf", "/system/fonts/DroidSans-Bold.ttf");
