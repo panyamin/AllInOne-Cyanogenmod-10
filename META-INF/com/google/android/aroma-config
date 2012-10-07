@@ -195,7 +195,7 @@ menubox(
 	
 	    "HeroC",        "If you have a Hero CDMA Phone",              "@apps",      #-- selected = 1
 		"Hero",         "If you have a Hero GSM Phone",               "@apps",       #-- selected = 2
-		"Eris",         "If you have an Eris CDMA Phone",             "@apps"       #-- selected = 3
+		"Eris",         "If you have an Eris CDMA Phone",             "@apps",       #-- selected = 3
 		"Magic",         "If you have a Magic GSM Phone",             "@apps"       #-- selected = 4		
 
 );
@@ -307,6 +307,3 @@ viewbox(
     "@welcome"
 
 );
-
-#---- FINISH
-
